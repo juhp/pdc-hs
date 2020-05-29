@@ -10,6 +10,37 @@ Fedora PDC web api client library
 -}
 
 module Fedora.PDC
+  ( fedoraPDC
+  , pdcArches
+  , pdcChangesets
+  , pdcComponentBranches
+  , pdcComponentBranchSLAs
+  , pdcComponentRelationshipTypes
+  , pdcComponentSLATypes
+  , pdcComposes
+  , pdcComposeImages
+  , pdcComposeImageRttTests
+  , pdcComposeRpms
+  , pdcComposeTreeRttTests
+  , pdcContentDeliveryContentFormats
+  , pdcGlobalComponents
+  , pdcImages
+  , pdcModules
+  , pdcProductVersions
+  , pdcProducts
+  , pdcReleases
+  , pdcWhereToFileBugs
+  , pdcRpms
+  , queryPDC
+  , lookupKey
+  , lookupKey'
+  , makeKey
+  , makeItem
+  , maybeKey
+  , Query
+  , QueryItem
+  , getResultsList
+  )
 where
 
 #if (defined(VERSION_lens_aeson))
@@ -30,16 +61,15 @@ import Data.Text (Text)
 import Network.HTTP.Simple
 import System.FilePath ((</>))
 
-server :: String
-server = "pdc.fedoraproject.org"
+fedoraPDC :: String
+fedoraPDC = "pdc.fedoraproject.org"
 
 -- | Arch List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/arches/
-pdcArches :: IO Object
-pdcArches = do
-  res <- queryPdc "arches" []
-  return $ res ^. _Object
+pdcArches :: String -> IO Object
+pdcArches server =
+  view _Object <$> queryPDC server "arches" []
 
 -- https://pdc.fedoraproject.org/rest_api/v1/auth/ *
 
@@ -50,121 +80,141 @@ pdcArches = do
 -- | Changeset List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/changesets/
-pdcChangesets :: Query -> IO Object
-pdcChangesets params = do
-  res <- queryPdc "changesets" params
-  return $ res ^. _Object
+pdcChangesets :: String -> Query -> IO Object
+pdcChangesets server params = do
+  view _Object <$> queryPDC server "changesets" params
 
 -- | Sla To Component Branch List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/component-branch-slas/
-pdcComponentBranchSLAs :: Query -> IO Object
-pdcComponentBranchSLAs params = do
-  res <- queryPdc "component-branch-slas" params
-  return $ res ^. _Object
+pdcComponentBranchSLAs :: String -> Query -> IO Object
+pdcComponentBranchSLAs server params =
+  view _Object <$> queryPDC server "component-branch-slas" params
 
 -- | Component Branch List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/component-branches/
-pdcComponentBranches :: Query -> IO [Object]
-pdcComponentBranches params = do
-  res <- queryPdc "component-branches" params
-  return $ res ^.. key "results" . values . _Object
+pdcComponentBranches :: String -> Query -> IO Object
+pdcComponentBranches server params = do
+  view _Object <$> queryPDC server "component-branches" params
+
+-- | Release Component Relationship Type List
+--
+-- https://pdc.fedoraproject.org/rest_api/v1/component-relationship-types/
+pdcComponentRelationshipTypes :: String -> IO Object
+pdcComponentRelationshipTypes server = do
+  view _Object <$> queryPDC server "component-relationship-types" []
 
 -- | Sla List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/component-sla-types/
-pdcComponentSLATypes :: Query -> IO Object
-pdcComponentSLATypes params = do
-  res <- queryPdc "component-sla-types"  params
-  return $ res ^. _Object
+pdcComponentSLATypes :: String -> Query -> IO Object
+pdcComponentSLATypes server params = do
+  view _Object <$> queryPDC server "component-sla-types" params
 
 -- | Compose Image Rtt Test List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/compose-image-rtt-tests/ (all untested?)
-pdcComposeImageRttTests :: Query -> IO Object
-pdcComposeImageRttTests params = do
-  view _Object <$> queryPdc "compose-image-rtt-tests" params
+pdcComposeImageRttTests :: String -> Query -> IO Object
+pdcComposeImageRttTests server params = do
+  view _Object <$> queryPDC server "compose-image-rtt-tests" params
 
+-- | Compose Image Instance
+--
 -- https://pdc.fedoraproject.org/rest_api/v1/compose-images/ {compose_id}/
+pdcComposeImages :: String -> String -> Query -> IO Object
+pdcComposeImages server compose params = do
+  view _Object <$> queryPDC server ("compose-images" </> compose ++ "/") params
 
+-- | Compose Rpm List (seems heavy)
+--
 -- https://pdc.fedoraproject.org/rest_api/v1/compose-rpms/ {compose_id}/
+pdcComposeRpms :: String -> String -> Query -> IO Object
+pdcComposeRpms server compose params = do
+  view _Object <$> queryPDC server ("compose-rpms" </> compose ++ "/") params
+
+-- | Compose Tree Rtt Test List
+--
+-- https://pdc.fedoraproject.org/rest_api/v1/compose-tree-rtt-tests/
+pdcComposeTreeRttTests :: String -> Query -> IO Object
+pdcComposeTreeRttTests server params = do
+  view _Object <$> queryPDC server "compose-tree-rtt-tests" params
 
 -- | Compose List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/composes/
-pdcComposes :: Query -> IO Object
-pdcComposes params = do
-  view _Object <$> queryPdc "composes" params
+pdcComposes :: String -> Query -> IO Object
+pdcComposes server params = do
+  view _Object <$> queryPDC server "composes" params
 
 -- https://pdc.fedoraproject.org/rest_api/v1/composes/%7Bcompose_id%7D/rpm-mapping/%7Bpackage%7D/
 
 -- | Content Format List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/content-delivery-content-formats/
-pdcContentDeliveryContentFormats :: Query -> IO Object
-pdcContentDeliveryContentFormats params = do
-  view _Object <$> queryPdc "content-delivery-content-formats" params
+pdcContentDeliveryContentFormats :: String -> Query -> IO Object
+pdcContentDeliveryContentFormats server params = do
+  view _Object <$> queryPDC server "content-delivery-content-formats" params
 
 -- | Global Component List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/global-components/
-pdcGlobalComponents :: Query -> IO Object
-pdcGlobalComponents params = do
-   view _Object <$> queryPdc "global-components" params
+pdcGlobalComponents :: String -> Query -> IO Object
+pdcGlobalComponents server params = do
+   view _Object <$> queryPDC server "global-components" params
 
 -- | Image List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/images/
-pdcImages :: Query -> IO Object
-pdcImages params =
-   view _Object <$> queryPdc "images" params
+pdcImages :: String -> Query -> IO Object
+pdcImages server params =
+   view _Object <$> queryPDC server "images" params
 
 -- | Module List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/modules/
-pdcModules :: Query -> IO Object
-pdcModules params = do
-  view _Object <$> queryPdc "modules" params
+pdcModules :: String -> Query -> IO Object
+pdcModules server params = do
+  view _Object <$> queryPDC server "modules" params
 
 -- | Product Version List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/product-versions/
-pdcProductVersions :: Query -> IO Object
-pdcProductVersions params = do
-  view _Object <$> queryPdc "product-versions" params
+pdcProductVersions :: String -> Query -> IO Object
+pdcProductVersions server params = do
+  view _Object <$> queryPDC server "product-versions" params
 
 -- | Product List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/products/
-pdcProducts :: Query -> IO Object
-pdcProducts params = do
-   view _Object <$> queryPdc "products" params
+pdcProducts :: String -> Query -> IO Object
+pdcProducts server params = do
+   view _Object <$> queryPDC server "products" params
 
 -- | Release List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/releases/
-pdcReleases :: Query -> IO Object
-pdcReleases params = do
-  view _Object <$> queryPdc "releases" params
+pdcReleases :: String -> Query -> IO Object
+pdcReleases server params = do
+  view _Object <$> queryPDC server "releases" params
 
 -- | Filter Bugzilla Products And Components List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/rpc/where-to-file-bugs/
-pdcWhereToFileBugs :: Query -> IO Object
-pdcWhereToFileBugs params =
-  view _Object <$> queryPdc "rpc/where-to-file-bugs" params
+pdcWhereToFileBugs :: String -> Query -> IO Object
+pdcWhereToFileBugs server params =
+  view _Object <$> queryPDC server "rpc/where-to-file-bugs" params
 
 -- | Rpm List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/rpms/
-pdcRpms :: Query -> IO Object
-pdcRpms params = do
-  view _Object <$> queryPdc "rpms" params
+pdcRpms :: String -> Query -> IO Object
+pdcRpms server params = do
+  view _Object <$> queryPDC server "rpms" params
 
 -- | low-level query
-queryPdc :: String -> Query -> IO Value
-queryPdc path params = do
+queryPDC :: String -> String -> Query -> IO Value
+queryPDC server path params = do
   let url = "https://" ++ server </> "rest_api/v1" </> path
   req <- setRequestQueryString params <$> parseRequest url
   getResponseBody <$> httpJSON req
@@ -190,6 +240,10 @@ lookupKey k = parseMaybe (.: k)
 lookupKey' :: FromJSON a => Text -> Object -> a
 lookupKey' k obj =
   fromMaybe (error ("no key: " ++ show k)) (lookupKey k obj)
+
+-- | Get results key from a response object
+getResultsList :: Object -> [Object]
+getResultsList = lookupKey' "results"
 
 #if !MIN_VERSION_http_conduit(2,3,1)
 type Query = [(ByteString, Maybe ByteString)]

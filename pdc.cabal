@@ -34,6 +34,7 @@ executable pdc-cli
                      , aeson-pretty
                      , base >= 4.9.1.0 && < 5
                      , bytestring
+                     , extra
                      , pdc
                      , simple-cmd-args >= 0.1.6
                      , split
