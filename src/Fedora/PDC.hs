@@ -122,16 +122,16 @@ pdcComposeImageRttTests server params = do
 -- | Compose Image Instance
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/compose-images/ {compose_id}/
-pdcComposeImages :: String -> String -> Query -> IO Object
-pdcComposeImages server compose params = do
-  view _Object <$> queryPDC server ("compose-images" </> compose ++ "/") params
+pdcComposeImages :: String -> String -> IO Object
+pdcComposeImages server compose = do
+  view _Object <$> queryPDC server ("compose-images" </> compose ++ "/") []
 
 -- | Compose Rpm List (seems heavy)
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/compose-rpms/ {compose_id}/
-pdcComposeRpms :: String -> String -> Query -> IO Object
-pdcComposeRpms server compose params = do
-  view _Object <$> queryPDC server ("compose-rpms" </> compose ++ "/") params
+pdcComposeRpms :: String -> String -> IO Object
+pdcComposeRpms server compose = do
+  view _Object <$> queryPDC server ("compose-rpms" </> compose ++ "/") []
 
 -- | Compose Tree Rtt Test List
 --
