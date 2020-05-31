@@ -143,9 +143,10 @@ pdcComposeTreeRttTests server params = do
 -- | Compose List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/composes/
-pdcComposes :: String -> Query -> IO Object
-pdcComposes server params = do
-  view _Object <$> queryPDC server "composes" params
+pdcComposes :: String -> Maybe String -> Query -> IO Object
+pdcComposes server mcompose params = do
+  let path = "composes" </> maybe "" (++ "/") mcompose
+  view _Object <$> queryPDC server path params
 
 -- https://pdc.fedoraproject.org/rest_api/v1/composes/%7Bcompose_id%7D/rpm-mapping/%7Bpackage%7D/
 
