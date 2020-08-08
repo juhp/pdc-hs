@@ -1,5 +1,5 @@
-resolver: lts-14.27
-packages:
-  - .
+resolver: lts-15.16
 extra-deps:
   - simple-cmd-args-0.1.6
+  - git: https://github.com/juhp/simple-query.git
+    commit: 70ea04865a100d1b2ba94ff98a26b17a5c69c7db

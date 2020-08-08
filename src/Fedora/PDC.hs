@@ -44,13 +44,7 @@ module Fedora.PDC
 where
 
 import Data.Aeson.Types
-#if !MIN_VERSION_http_conduit(2,3,3)
-import Data.ByteString (ByteString)
-#endif
-import qualified Data.ByteString.Char8 as B
-import Data.Maybe
-import Data.Text (Text)
-import Network.HTTP.Simple
+import Network.HTTP.Query
 import System.FilePath ((</>))
 
 fedoraPDC :: String
@@ -207,40 +201,10 @@ pdcRpms server params = do
 
 -- | low-level query
 queryPDC :: String -> String -> Query -> IO Object
-queryPDC server path params = do
+queryPDC server path params =
   let url = "https://" ++ server </> "rest_api/v1" </> path
-  req <- setRequestQueryString params <$> parseRequest url
-  getResponseBody <$> httpJSON req
-
--- | Maybe create a query key
-maybeKey :: String -> Maybe String -> Query
-maybeKey _ Nothing = []
-maybeKey k mval = [(B.pack k, fmap B.pack mval)]
-
--- | make a singleton key-value Query
-makeKey :: String -> String -> Query
-makeKey k val = [(B.pack k, Just (B.pack val))]
-
--- | make a key-value QueryItem
-makeItem :: String -> String -> QueryItem
-makeItem k val = (B.pack k, Just (B.pack val))
-
--- | looks up key in object
-lookupKey :: FromJSON a => Text -> Object -> Maybe a
-lookupKey k = parseMaybe (.: k)
-
--- | like lookupKey but raises an error if no key found
-lookupKey' :: FromJSON a => Text -> Object -> a
-lookupKey' k obj =
-  fromMaybe (error ("no key: " ++ show k)) (lookupKey k obj)
+  in webAPIQuery url path params
 
 -- | Get results key from a response object
 getResultsList :: Object -> [Object]
 getResultsList = lookupKey' "results"
-
-#if !MIN_VERSION_http_conduit(2,3,1)
-type Query = [(ByteString, Maybe ByteString)]
-#endif
-#if !MIN_VERSION_http_conduit(2,3,3)
-type QueryItem = (ByteString, Maybe ByteString)
-#endif
