@@ -54,7 +54,6 @@ executable pdc-cli
 library
   build-depends:       aeson
                      , base >= 4 && < 5
-                     , filepath
                      , http-query
                      , text
                      , time

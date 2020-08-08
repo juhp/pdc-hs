@@ -2,4 +2,4 @@ resolver: lts-15.16
 extra-deps:
   - simple-cmd-args-0.1.6
   - git: https://github.com/juhp/simple-query.git
-    commit: 70ea04865a100d1b2ba94ff98a26b17a5c69c7db
+    commit: c23eadb370e5341facd4716044e3ae70a0a4ceab

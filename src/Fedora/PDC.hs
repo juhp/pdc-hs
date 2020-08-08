@@ -45,7 +45,6 @@ where
 
 import Data.Aeson.Types
 import Network.HTTP.Query
-import System.FilePath ((</>))
 
 fedoraPDC :: String
 fedoraPDC = "pdc.fedoraproject.org"
@@ -110,14 +109,14 @@ pdcComposeImageRttTests server params = do
 -- https://pdc.fedoraproject.org/rest_api/v1/compose-images/ {compose_id}/
 pdcComposeImages :: String -> String -> IO Object
 pdcComposeImages server compose = do
-  queryPDC server ("compose-images" </> compose ++ "/") []
+  queryPDC server ("compose-images" +/+ compose ++ "/") []
 
 -- | Compose Rpm List (seems heavy)
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/compose-rpms/ {compose_id}/
 pdcComposeRpms :: String -> String -> IO Object
 pdcComposeRpms server compose = do
-  queryPDC server ("compose-rpms" </> compose ++ "/") []
+  queryPDC server ("compose-rpms" +/+ compose ++ "/") []
 
 -- | Compose Tree Rtt Test List
 --
@@ -131,7 +130,7 @@ pdcComposeTreeRttTests server params = do
 -- https://pdc.fedoraproject.org/rest_api/v1/composes/
 pdcComposes :: String -> Maybe String -> Query -> IO Object
 pdcComposes server mcompose params = do
-  let path = "composes" </> maybe "" (++ "/") mcompose
+  let path = "composes" +/+ maybe "" (++ "/") mcompose
   queryPDC server path params
 
 -- https://pdc.fedoraproject.org/rest_api/v1/composes/%7Bcompose_id%7D/rpm-mapping/%7Bpackage%7D/
@@ -202,7 +201,7 @@ pdcRpms server params = do
 -- | low-level query
 queryPDC :: String -> String -> Query -> IO Object
 queryPDC server path params =
-  let url = "https://" ++ server </> "rest_api/v1" </> path
+  let url = "https://" ++ server +/+ "rest_api/v1" +/+ path
   in webAPIQuery url path params
 
 -- | Get results key from a response object
