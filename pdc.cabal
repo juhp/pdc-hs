@@ -1,5 +1,5 @@
 name:                pdc
-version:             0.1.0
+version:             0.1
 synopsis:            Fedora Product Definition Center service
 description:
         A library and cli to Fedora's PDC service
@@ -21,10 +21,6 @@ tested-with:         GHC == 8.0.2
 source-repository head
   type:                git
   location:            https://github.com/juhp/pdc-hs.git
-
-flag microlens
-  description:       Use smaller microlens instead of lens
-  default:           False
 
 executable pdc-cli
   main-is:             Main.hs
@@ -61,12 +57,9 @@ library
                      , bytestring
                      , filepath
                      , http-conduit
+                     , simple-aeson
                      , text
                      , time
-  if flag(microlens)
-      build-depends:   microlens, microlens-aeson
-  else
-      build-depends:   lens, lens-aeson
 
   exposed-modules:     Fedora.PDC
   hs-source-dirs:      src
