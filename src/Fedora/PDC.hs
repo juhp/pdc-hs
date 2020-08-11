@@ -202,7 +202,7 @@ pdcRpms server params = do
 queryPDC :: String -> String -> Query -> IO Object
 queryPDC server path params =
   let url = "https://" ++ server +/+ "rest_api/v1" +/+ path
-  in webAPIQuery url path params
+  in webAPIQuery url params
 
 -- | Get results key from a response object
 getResultsList :: Object -> [Object]
