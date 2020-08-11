@@ -52,9 +52,9 @@ fedoraPDC = "pdc.fedoraproject.org"
 -- | Arch List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/arches/
-pdcArches :: String -> IO Object
+pdcArches :: String -> IO [Object]
 pdcArches server =
-  queryPDC server "arches" []
+  lookupKey' "results" <$> queryPDC server "arches" []
 
 -- https://pdc.fedoraproject.org/rest_api/v1/auth/ *
 
@@ -86,16 +86,16 @@ pdcComponentBranches server params = do
 -- | Release Component Relationship Type List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/component-relationship-types/
-pdcComponentRelationshipTypes :: String -> IO Object
-pdcComponentRelationshipTypes server = do
-  queryPDC server "component-relationship-types" []
+pdcComponentRelationshipTypes :: String -> IO [Object]
+pdcComponentRelationshipTypes server =
+  lookupKey' "results" <$> queryPDC server "component-relationship-types" []
 
 -- | Sla List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/component-sla-types/
-pdcComponentSLATypes :: String -> Query -> IO Object
+pdcComponentSLATypes :: String -> Query -> IO [Object]
 pdcComponentSLATypes server params = do
-  queryPDC server "component-sla-types" params
+  lookupKey' "results" <$> queryPDC server "component-sla-types" params
 
 -- | Compose Image Rtt Test List
 --
@@ -138,9 +138,9 @@ pdcComposes server mcompose params = do
 -- | Content Format List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/content-delivery-content-formats/
-pdcContentDeliveryContentFormats :: String -> Query -> IO Object
+pdcContentDeliveryContentFormats :: String -> Query -> IO [Object]
 pdcContentDeliveryContentFormats server params = do
-  queryPDC server "content-delivery-content-formats" params
+  lookupKey' "results" <$> queryPDC server "content-delivery-content-formats" params
 
 -- | Global Component List
 --
@@ -166,16 +166,16 @@ pdcModules server params = do
 -- | Product Version List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/product-versions/
-pdcProductVersions :: String -> Query -> IO Object
-pdcProductVersions server params = do
-  queryPDC server "product-versions" params
+pdcProductVersions :: String -> Query -> IO [Object]
+pdcProductVersions server params =
+  lookupKey' "results" <$> queryPDC server "product-versions" params
 
 -- | Product List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/products/
-pdcProducts :: String -> Query -> IO Object
-pdcProducts server params = do
-   queryPDC server "products" params
+pdcProducts :: String -> Query -> IO [Object]
+pdcProducts server params =
+  lookupKey' "results" <$> queryPDC server "products" params
 
 -- | Release List
 --
