@@ -139,8 +139,8 @@ pdcComposes server mcompose params = do
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/content-delivery-content-formats/
 pdcContentDeliveryContentFormats :: String -> Query -> IO [Object]
-pdcContentDeliveryContentFormats server =
-  lookupKey' "results" <$> queryPDC server "content-delivery-content-formats"
+pdcContentDeliveryContentFormats server params =
+  lookupKey' "results" <$> queryPDC server "content-delivery-content-formats" params
 
 -- | Global Component List
 --
@@ -167,15 +167,15 @@ pdcModules server =
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/product-versions/
 pdcProductVersions :: String -> Query -> IO [Object]
-pdcProductVersions server =
-  lookupKey' "results" <$> queryPDC server "product-versions"
+pdcProductVersions server params =
+  lookupKey' "results" <$> queryPDC server "product-versions" params
 
 -- | Product List
 --
 -- https://pdc.fedoraproject.org/rest_api/v1/products/
 pdcProducts :: String -> Query -> IO [Object]
-pdcProducts server =
-  lookupKey' "results" <$> queryPDC server "products"
+pdcProducts server params =
+  lookupKey' "results" <$> queryPDC server "products" params
 
 -- | Release List
 --
