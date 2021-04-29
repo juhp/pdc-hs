@@ -1,0 +1,3 @@
+[versions]
+# lts-10 too old for http-query
+oldest = lts-11
