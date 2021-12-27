@@ -1,10 +1,11 @@
 name:                pdc
-version:             0.1.0.1
+version:             0.1.1
 synopsis:            Fedora Product Definition Center service
 description:
-        A library for Fedora's PDC service
+        A http query library for Fedora's PDC service.
 license:             MIT
 license-file:        LICENSE
+category:            Network
 author:              Jens Petersen <juhpetersen@gmail.com>
 maintainer:          Jens Petersen <juhpetersen@gmail.com>
 copyright:           2020  Jens Petersen <juhpetersen@gmail.com>
