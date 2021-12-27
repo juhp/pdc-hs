@@ -1,5 +1,4 @@
-# Revision history for pdc
+# Release history of pdc
 
-## 0.1.0 -- YYYY-mm-dd
-
-* First version. Released on an unsuspecting world.
+## 0.1.0.1 (2021-12-27)
+- initial Hackage release

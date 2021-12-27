@@ -1,5 +1,5 @@
 name:                pdc
-version:             0.1
+version:             0.1.0.1
 synopsis:            Fedora Product Definition Center service
 description:
         A library for Fedora's PDC service
@@ -44,5 +44,7 @@ library
   if impl(ghc >= 8.4)
     ghc-options:       -Wmissing-export-lists
                        -Wpartial-fields
+  if impl(ghc >= 8.10)
+    ghc-options:       -Wunused-packages
 
   default-language:    Haskell2010
